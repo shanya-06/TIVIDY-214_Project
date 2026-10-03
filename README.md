@@ -3,3 +3,4 @@ COS 214 Project - TIVIDY
 
 # Team members: 
 Shanya Nair - u25061845
+Nasiha Osman - u25110188
