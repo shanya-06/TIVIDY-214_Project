@@ -5,13 +5,13 @@ COS 214 Project - TIVIDY
 - Dev/
   working branch
   |
-  -includes/
+  - includes/
     for .h files
   |
-  -src/
+  - src/
     for .cpp files
   |
-  -build/
+  - build/
     for Docker and similar files
 
 # Team members: 
