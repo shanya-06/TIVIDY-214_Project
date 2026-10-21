@@ -2,12 +2,13 @@
 #define WORKITEM_H
 #include <string>
 #include <vector>
+#include "WorkItemComponent.h"
 
 class WorkflowObserver;
 class WorkflowParticipant;
 class WorkItemState;
 
-class WorkItem {
+class WorkItem : public WorkItemComponent {
 private:
     WorkItemState* state;
     WorkflowParticipant* assignedParticipant;
