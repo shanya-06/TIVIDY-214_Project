@@ -2,6 +2,14 @@
 #define COMMAND_H
 #include <string>
 
+/** 
+ * @class Command
+ * Command class
+ * 
+ * - Gang of Four pattern: Command-> Abstract Command class
+ *
+**/
+
 class Command {
 public:
     virtual void execute() =0;
@@ -10,7 +18,11 @@ public:
     virtual ~Command() = default;
 }; 
 
-
+/** 
+ * @class AssignCommand
+ * - Gang of Four pattern: Command-> Concrete Command class
+ *
+**/
 class AssignCommand : public Command
 {
 private:
@@ -28,7 +40,12 @@ public:
     std::string getDescription() const override;
 };
 
-
+/** 
+ * @class CompleteWorkCommand
+ * 
+ * - Gang of Four pattern: Command-> Concrete Command class
+ *
+**/
 class CompleteWorkCommand : public Command
 {
 private:
@@ -47,7 +64,12 @@ public:
 };
 
 
-
+/** 
+ * @class RejectCommand
+ * 
+ * - Gang of Four pattern: Command-> Concrete Command class
+ *
+**/
 class RejectCommand : public Command
 {
 private:
@@ -66,7 +88,12 @@ public:
 };
 
 
-
+/** 
+ * @class EscalateCommand
+ * 
+ * - Gang of Four pattern: Command-> Concrete Command class
+ *
+**/
 class EscalateCommand : public Command
 {
 private:
