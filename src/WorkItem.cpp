@@ -1,58 +1,132 @@
 #include "WorkItem.h"
-#include "WorkflowObserver.h"
-#include "WorkflowParticipant.h"
-#include "WorkItemState.h"
+
 #include <algorithm>
+#include <stdexcept>
 
-WorkItem::WorkItem():state(nullptr),assignedParticipant(nullptr){
+#include "WorkItemState.h"
+#include "WorkflowObserver.h"
+
+WorkItem::WorkItem(const std::string& id, const std::string& name, const std::string& requiredRole,
+                   bool needsApproval, Mediator* mediator)
+    : WorkflowColleague(mediator),
+      id(id),
+      name(name),
+      requiredRole(requiredRole),
+      needsApproval(needsApproval),
+      state(nullptr),
+      assignee(nullptr) {}
+
+WorkItem::~WorkItem() {
+    delete state;
 }
 
-void WorkItem::attach(WorkflowObserver* observer){
-    observers.push_back(observer);
+std::string WorkItem::getId() const {
+    return id;
 }
 
-void WorkItem::detach(WorkflowObserver* observer){
-    observers.erase(std::remove(observers.begin(), observers.end(), observer),
-        observers.end());
+std::string WorkItem::getName() const {
+    return name;
 }
 
-void WorkItem::notifyObservers(const std::string& event){
-    for (WorkflowObserver* observer : observers){
-        observer->update(event);
+std::string WorkItem::getRequiredRole() const {
+    return requiredRole;
+}
+
+bool WorkItem::requiresApproval() const {
+    return needsApproval;
+}
+
+// Observer
+
+void WorkItem::attach(WorkflowObserver* observer) {
+    if (observer && std::find(observers.begin(), observers.end(), observer) == observers.end()) {
+        observers.push_back(observer);
     }
 }
 
-void WorkItem::assign(WorkflowParticipant* participant){
-    assignedParticipant = participant;
-    notifyObservers("Work item assigned");
+void WorkItem::detach(WorkflowObserver* observer) {
+    observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
 }
 
-void WorkItem::start(){
-    if (state != nullptr){
-        state->start(this);
+void WorkItem::notifyObservers(const std::string& event) {
+    // Copy first: an observer may detach itself while being notified.
+    std::vector<WorkflowObserver*> current(observers);
+    for (WorkflowObserver* observer : current) {
+        observer->update(this, event);
     }
-    notifyObservers("Work item started");
 }
 
-void WorkItem::complete(const std::string& result){
-    if (state != nullptr){
-        state->complete(this);
+// Lifecycle 
+
+void WorkItem::makeAvailable() {
+    requireState()->makeAvailable(this);
+}
+
+void WorkItem::assign(WorkflowParticipant* participant) {
+    if (!participant) {
+        throw std::invalid_argument("Cannot assign work item '" + id + "' to nobody");
     }
-    notifyObservers("Work item completed: " + result);
+    // Set the assignee before the state changes so observers already see 
+    // Roll back if the current state does not allow 
+    WorkflowParticipant* previous = assignee;
+    assignee = participant;
+    try {
+        requireState()->assign(this, participant);
+    } catch (...) {
+        assignee = previous;
+        throw;
+    }
 }
 
-void WorkItem::reject(const std::string& reason){
-    notifyObservers("Work item rejected: " + reason);
+WorkflowParticipant* WorkItem::getAssignee() const {
+    return assignee;
 }
 
-void WorkItem::escalate(){
-    notifyObservers("Work item escalated");
+void WorkItem::start() {
+    requireState()->start(this);
 }
 
-void WorkItem::setState(WorkItemState* newState){
+void WorkItem::complete() {
+    requireState()->complete(this);
+}
+
+void WorkItem::approve() {
+    requireState()->approve(this);
+}
+
+void WorkItem::reject(const std::string& reason) {
+    requireState()->reject(this, reason);
+}
+
+void WorkItem::escalate() {
+    requireState()->escalate(this);
+}
+
+// State 
+
+void WorkItem::setState(WorkItemState* newState) {
+    if (newState == state) {
+        return;
+    }
+    WorkItemState* old = state;
     state = newState;
+    delete old;
+
+    notifyObservers(getStateName());
+    changed();
 }
 
-WorkItemState* WorkItem::getState() const{
+WorkItemState* WorkItem::getState() const {
+    return state;
+}
+
+std::string WorkItem::getStateName() const {
+    return state ? state->getName() : "None";
+}
+
+WorkItemState* WorkItem::requireState() const {
+    if (!state) {
+        throw std::logic_error("Work item '" + id + "' has no state; call setState(new CreatedState()) first");
+    }
     return state;
 }
