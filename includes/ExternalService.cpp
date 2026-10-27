@@ -15,6 +15,7 @@ std::string ExternalService::performRequest(const std::string& operation, const 
             return "Payment failed: missing claim details";
         }
 
+        return "Payment processed for claim " + payload.at("claimId") + ", amount: " + payload.at("amount");
     }
 
     if (operation == "academicVerification") {
