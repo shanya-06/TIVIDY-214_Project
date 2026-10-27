@@ -5,22 +5,39 @@
 
 #include "WorkItemDecorator.h"
 
-/** @brief Adds a deadline. Tracks whether the item is overdue and whether it finished late. */
-class DeadlineDecorator : public WorkItemDecorator {
+/**
+ * @brief Adds a priority level to a work item (Concrete Decorator).
+ *
+ * Priority is a plain number where a higher number is more urgent. The decorator also
+ * prefixes the item's name with its priority (for example "[P2] Assess claim") and
+ * raises the priority by one when the item is escalated.
+ */
+class PriorityDecorator : public WorkItemDecorator {
 public:
-    DeadlineDecorator(WorkItem* component, std::time_t deadline);
-
-    std::time_t getDeadline() const;
-    /** @brief True if the deadline has passed and the item is not Completed. */
-    bool isOverdue() const;
-    /** @brief True if complete() succeeded after the deadline. */
-    bool wasCompletedLate() const;
-
-    virtual void complete(const Map& result) override;
-
+    /**
+     * @brief Wraps an item with a priority.
+     * @param component Item to wrap. Ownership transfers to the decorator.
+     * @param priority Starting priority (higher means more urgent).
+     * @throws std::invalid_argument if @p component is null.
+     */
+    PriorityDecorator(WorkItem* component, int priority);
+ 
+    /** @brief Current priority. */
+    int getPriority() const;
+ 
+    /** @brief Name of the wrapped item with prefix". */
+    virtual std::string getName() const override;
+ 
+    /**
+     * @brief Escalates the wrapped item, then raises the priority by one.
+     * @throws Whatever the item's current state throws if escalation is not allowed.
+     *         In that case the priority is left unchanged.
+     */
+    virtual void escalate() override;
+ 
 private:
-    std::time_t deadline;
-    bool completedLate;
+    int priority;
 };
-
+ 
 #endif
+ 
