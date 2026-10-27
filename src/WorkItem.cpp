@@ -72,6 +72,7 @@ void WorkItem::assign(WorkflowParticipant* participant) {
     assignee = participant;
     try {
         requireState()->assign(this, participant);
+        changed();
     } catch (...) {
         assignee = previous;
         throw;
