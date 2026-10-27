@@ -1,51 +1,88 @@
 #ifndef WORKITEMDECORATOR_H
 #define WORKITEMDECORATOR_H
-
+ 
 #include "WorkItem.h"
-
+ 
 /**
- * @brief Base decorator: IS a WorkItem and HAS a WorkItem.
+ * @brief Base class for all work-item decorators (Decorator pattern).
  *
- * Every virtual operation of WorkItem is forwarded to the wrapped component.
- * Concrete decorators override only the operations they want to add behaviour to,
- * and call WorkItemDecorator::operation() (or component->operation()) to do the real work.
+ * A decorator both IS a WorkItem 
+ * and HAS a WorkItem (the component it wraps). Every operation is forwarded to the
+ * wrapped component; concrete decorators override only the operations they extend.
  *
- * Owns the wrapped component: deleting the outermost decorator deletes the whole chain.
- * The decorator's own inherited WorkItem state stays empty; the real state lives in the component.
+ * Ownership: owns the wrapped component and deletes it, so deleting the outermost
+ * decorator deletes the whole chain.
+ *
+ * @note Observers and the mediator are notified by the innermost WorkItem with its own
  */
 class WorkItemDecorator : public WorkItem {
 public:
+    /**
+     * @brief Wraps a work item.
+     * @param component The item to wrap. Ownership transfers to the decorator.
+     * @throws std::invalid_argument if @p component is null.
+     */
     explicit WorkItemDecorator(WorkItem* component);
+ 
+    /** @brief Deletes the wrapped component (and so the rest of the chain). */
     virtual ~WorkItemDecorator();
-
-    // Identity
+ 
+    /** @name Identity (forwarded to the wrapped item) */
+    ///@{
+    /** @copydoc WorkItem::getId */
     virtual std::string getId() const override;
+    /** @copydoc WorkItem::getName */
     virtual std::string getName() const override;
+    /** @copydoc WorkItem::getRequiredRole */
     virtual std::string getRequiredRole() const override;
+    /** @copydoc WorkItem::requiresApproval */
     virtual bool requiresApproval() const override;
-
-    // Observer
+    ///@}
+ 
+    /** @name Observer (forwarded, so observers attach to the real item) */
+    ///@{
+    /** @copydoc WorkItem::attach */
     virtual void attach(WorkflowObserver* observer) override;
+    /** @copydoc WorkItem::detach */
     virtual void detach(WorkflowObserver* observer) override;
+    /** @copydoc WorkItem::notifyObservers */
     virtual void notifyObservers(const std::string& event) override;
-
-    // Lifecycle
+    ///@}
+ 
+    /** @name Lifecycle (forwarded to the wrapped item's current state) */
+    ///@{
+    /** @copydoc WorkItem::makeAvailable */
     virtual void makeAvailable() override;
+    /** @copydoc WorkItem::assign */
     virtual void assign(WorkflowParticipant* participant) override;
+    /** @copydoc WorkItem::getAssignee */
     virtual WorkflowParticipant* getAssignee() const override;
+    /** @copydoc WorkItem::start */
     virtual void start() override;
+    /** @copydoc WorkItem::complete */
     virtual void complete() override;
+    /** @copydoc WorkItem::approve */
     virtual void approve() override;
+    /** @copydoc WorkItem::reject */
     virtual void reject(const std::string& reason) override;
+    /** @copydoc WorkItem::escalate */
     virtual void escalate() override;
-
-    // State
+    ///@}
+ 
+    /** @name State (forwarded to the wrapped item) */
+    ///@{
+    /** @copydoc WorkItem::setState */
     virtual void setState(WorkItemState* state) override;
+    /** @copydoc WorkItem::getState */
     virtual WorkItemState* getState() const override;
+    /** @copydoc WorkItem::getStateName */
     virtual std::string getStateName() const override;
-
+    ///@}
+ 
 protected:
+    /** @brief The wrapped item. Owned. Never null after construction. */
     WorkItem* component;
 };
-
+ 
 #endif
+ 
