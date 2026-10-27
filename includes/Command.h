@@ -60,9 +60,7 @@ private:
     WorkflowParticipant* participant;
 
 public:
-    AssignCommand(
-        WorkItem* item,
-        WorkflowParticipant* participant);
+    AssignCommand(WorkItem* item, WorkflowParticipant* participant);
 
     void execute() override;
     void undo() override;
@@ -87,9 +85,7 @@ private:
     Map result;
 
 public:
-    CompleteWorkCommand(
-        WorkItem* item,
-        const Map& result);
+    CompleteWorkCommand( WorkItem* item, const Map& result);
 
     void execute() override;
     void undo() override;
@@ -116,9 +112,7 @@ private:
     std::string reason;
 
 public:
-    RejectCommand(
-        WorkItem* item,
-        const std::string& reason);
+    RejectCommand(WorkItem* item, const std::string& reason);
 
     void execute() override;
     void undo() override;
@@ -143,8 +137,7 @@ private:
     WorkItem* receiver;
 
 public:
-    EscalateCommand(
-        WorkItem* item);
+    EscalateCommand(WorkItem* item);
 
     void execute() override;
     void undo() override;
