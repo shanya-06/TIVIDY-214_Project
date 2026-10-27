@@ -5,15 +5,18 @@
 #include "AssignmentStrategy.h"
 
 /**
- * @brief Selects a participant based on a required role.
+ * @brief Selects a participant based on their role.
  *
- * This strategy is generic and can be used by
- * any workflow scenario.
+ * Finds an available participant whose role matches
+ * the role required by the WorkItem.
+ *
+ * Works with any workflow scenario.
  */
 class RoleBasedAssignmentStrategy : public AssignmentStrategy {
 public:
     WorkflowParticipant* selectParticipant(
-        WorkItem* item
+        WorkItem* item,
+        const std::vector<WorkflowParticipant*>& participants
     ) override;
 };
 

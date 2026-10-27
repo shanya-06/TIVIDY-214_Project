@@ -7,14 +7,17 @@
 /**
  * @brief Selects a participant using configurable rules.
  *
- * This strategy allows different workflow scenarios
- * to apply assignment rules without changing the
- * generic workflow engine.
+ * Applies generic assignment rules to choose a
+ * suitable participant for a work item.
+ *
+ * Works with different workflow scenarios without
+ * requiring industry-specific code.
  */
 class RuleBasedAssignmentStrategy : public AssignmentStrategy {
 public:
     WorkflowParticipant* selectParticipant(
-        WorkItem* item
+        WorkItem* item,
+        const std::vector<WorkflowParticipant*>& participants
     ) override;
 };
 

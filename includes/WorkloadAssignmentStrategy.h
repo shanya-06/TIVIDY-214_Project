@@ -7,15 +7,16 @@
 /**
  * @brief Selects a participant based on workload.
  *
- * Chooses an eligible participant with the
- * lowest workload.
+ * Finds available participants with the required
+ * role and selects the one with the lowest workload.
  *
- * This strategy is independent of workflow industry.
+ * Works with any workflow scenario.
  */
 class WorkloadAssignmentStrategy : public AssignmentStrategy {
 public:
     WorkflowParticipant* selectParticipant(
-        WorkItem* item
+        WorkItem* item,
+        const std::vector<WorkflowParticipant*>& participants
     ) override;
 };
 
