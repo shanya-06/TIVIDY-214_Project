@@ -5,16 +5,22 @@
 #include "AssignmentStrategy.h"
 
 /**
- * @brief Selects a participant using configurable rules.
+ * @brief Assigns work using configurable eligibility rules.
  *
- * Applies generic assignment rules to choose a
- * suitable participant for a work item.
- *
- * Works with different workflow scenarios without
- * requiring industry-specific code.
+ * Checks participant role, availability, and
+ * an optional maximum workload threshold.
  */
 class RuleBasedAssignmentStrategy : public AssignmentStrategy {
+private:
+    int maxWorkload;
+
 public:
+    /**
+     * @brief Creates a rule-based assignment strategy.
+     * @param maxWorkload Maximum permitted participant workload.
+     */
+    explicit RuleBasedAssignmentStrategy(int maxWorkload);
+
     WorkflowParticipant* selectParticipant(
         WorkItem* item,
         const std::vector<WorkflowParticipant*>& participants
