@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "Types.h"
 #include "WorkflowColleague.h"
 
 class Mediator;
@@ -21,8 +20,7 @@ class WorkflowParticipant;
  *   WorkflowMediator can decide what happens next.
  * - Decorator component: operations are virtual so WorkItemDecorator can wrap them.
  *
- * Owns its current state. Does not own its assignee, observers,
- * prerequisites or dependents.
+ * Owns its current state. Does not own its assignee or observers.
  *
  * A new item has no state; whoever creates it (the factory or builder)
  * must call setState(new CreatedState()) before using it.
@@ -51,17 +49,10 @@ public:
     virtual void assign(WorkflowParticipant* participant);
     virtual WorkflowParticipant* getAssignee() const;
     virtual void start();
-    virtual void complete(const Map& result);
+    virtual void complete();
     virtual void approve();
     virtual void reject(const std::string& reason);
     virtual void escalate();
-
-    // Dependencies
-    /** @brief This item cannot start until item is Completed. Also records this item as one of item's dependents. */
-    virtual void addPrerequisite(WorkItem* item);
-    /** @brief True when every prerequisite is Completed (or there are none). */
-    virtual bool prerequisitesMet() const;
-    virtual std::vector<WorkItem*> getDependents() const;
 
     // State
     /**
@@ -84,8 +75,6 @@ private:
     WorkItemState* state;
     WorkflowParticipant* assignee;
     std::vector<WorkflowObserver*> observers;
-    std::vector<WorkItem*> prerequisites;
-    std::vector<WorkItem*> dependents;
 };
 
 #endif
