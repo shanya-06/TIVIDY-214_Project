@@ -86,8 +86,8 @@ void WorkItem::start() {
     requireState()->start(this);
 }
 
-void WorkItem::complete(const Map& result) {
-    requireState()->complete(this, result);
+void WorkItem::complete() {
+    requireState()->complete(this);
 }
 
 void WorkItem::approve() {
@@ -100,32 +100,6 @@ void WorkItem::reject(const std::string& reason) {
 
 void WorkItem::escalate() {
     requireState()->escalate(this);
-}
-
-// Dependencies 
-
-void WorkItem::addPrerequisite(WorkItem* item) {
-    if (!item || item == this) {
-        throw std::invalid_argument("Invalid prerequisite for work item '" + id + "'");
-    }
-    if (std::find(prerequisites.begin(), prerequisites.end(), item) != prerequisites.end()) {
-        return;
-    }
-    prerequisites.push_back(item);
-    item->dependents.push_back(this);
-}
-
-bool WorkItem::prerequisitesMet() const {
-    for (WorkItem* item : prerequisites) {
-        if (item->getStateName() != "Completed") {
-            return false;
-        }
-    }
-    return true;
-}
-
-std::vector<WorkItem*> WorkItem::getDependents() const {
-    return dependents;
 }
 
 // State 
