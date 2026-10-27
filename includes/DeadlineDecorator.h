@@ -1,42 +1,45 @@
 #ifndef DEADLINEDECORATOR_H
 #define DEADLINEDECORATOR_H
-
+ 
 #include <ctime>
-
+ 
 #include "WorkItemDecorator.h"
-
+ 
 /**
- * @brief Adds a priority level to a work item (Concrete Decorator).
+ * @brief Adds a deadline to a work item (Concrete Decorator).
  *
- * Priority is a plain number where a higher number is more urgent. The decorator also
- * prefixes the item's name with its priority (for example "[P2] Assess claim") and
- * raises the priority by one when the item is escalated.
+ * Reports whether the item is currently overdue and remembers whether it was
+ * completed after its deadline. It does not stop or cancel late work.
  */
-class PriorityDecorator : public WorkItemDecorator {
+class DeadlineDecorator : public WorkItemDecorator {
 public:
     /**
-     * @brief Wraps an item with a priority.
+     * @brief Wraps an item with a deadline.
      * @param component Item to wrap. Ownership transfers to the decorator.
-     * @param priority Starting priority (higher means more urgent).
+     * @param deadline Latest acceptable completion time (seconds since the epoch).
      * @throws std::invalid_argument if @p component is null.
      */
-    PriorityDecorator(WorkItem* component, int priority);
+    DeadlineDecorator(WorkItem* component, std::time_t deadline);
  
-    /** @brief Current priority. */
-    int getPriority() const;
+    /** @brief The deadline given at construction. */
+    std::time_t getDeadline() const;
  
-    /** @brief Name of the wrapped item with prefix". */
-    virtual std::string getName() const override;
+    /** @brief True if the deadline has passed and the item is not yet Completed. */
+    bool isOverdue() const;
+ 
+    /** @brief True if complete() succeeded after the deadline had passed. */
+    bool wasCompletedLate() const;
  
     /**
-     * @brief Escalates the wrapped item, then raises the priority by one.
-     * @throws Whatever the item's current state throws if escalation is not allowed.
-     *         In that case the priority is left unchanged.
+     * @brief Completes the wrapped item and records whether this was after the deadline.
+     * @throws Whatever the item's current state throws if completion is not allowed.
+     *         In that case wasCompletedLate() is left unchanged.
      */
-    virtual void escalate() override;
+    virtual void complete() override;
  
 private:
-    int priority;
+    std::time_t deadline;
+    bool completedLate;
 };
  
 #endif
