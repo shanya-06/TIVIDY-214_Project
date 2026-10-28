@@ -2,24 +2,32 @@
 #ifndef ASSIGNMENTSTRATEGY_H
 #define ASSIGNMENTSTRATEGY_H
 
+#include <vector>
+
 class WorkItem;
 class WorkflowParticipant;
 
 /**
  * @brief Abstract Strategy interface for work assignment.
  *
- * Defines a common method for selecting a suitable
- * participant for a work item.
+ * Allows different algorithms to select a suitable
+ * workflow participant for a work item.
  *
- * Concrete strategies will implement different
- * assignment algorithms.
+ * The strategy does not own the work item or participants.
  */
 class AssignmentStrategy {
 public:
     virtual ~AssignmentStrategy() = default;
 
+    /**
+     * @brief Selects a suitable participant.
+     * @param item Work item requiring assignment.
+     * @param participants Available candidates to evaluate.
+     * @return Selected participant, or nullptr if none qualifies.
+     */
     virtual WorkflowParticipant* selectParticipant(
-        WorkItem* item
+        WorkItem* item,
+        const std::vector<WorkflowParticipant*>& participants
     ) = 0;
 };
 
