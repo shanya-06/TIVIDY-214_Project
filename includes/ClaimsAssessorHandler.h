@@ -16,3 +16,4 @@ private:
     ApprovalAction action_;
 };
 
+#endif
