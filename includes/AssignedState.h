@@ -4,27 +4,17 @@
 
 #include "WorkItemState.h"
 
-/**
- * @brief Represents a work item assigned to a participant.
- *
- * An assigned work item can transition to InProgress
- * when processing begins.
- *
- * Unsupported operations are rejected by WorkItemState.
- */
+/** @brief Work item assigned to a participant. */
 class AssignedState : public WorkItemState {
 public:
-    /**
-     * @brief Returns the name of this lifecycle state.
-     */
+    /** @brief Returns the state name. */
     std::string getName() const override;
 
-    /**
-     * @brief Starts processing the assigned work item.
-     *
-     * @param item Work item whose processing will begin.
-     */
+    /** @brief Starts the assigned work item. */
     void start(WorkItem* item) override;
+
+    /** @brief Escalates the item for reassignment. */
+    void escalate(WorkItem* item) override;
 };
 
 #endif

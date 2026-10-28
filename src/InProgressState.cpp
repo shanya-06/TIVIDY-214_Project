@@ -7,46 +7,48 @@
 
 #include <stdexcept>
 
-/**
- * @brief Returns the current state's name.
- */
+InProgressState::InProgressState()
+    : awaitingApproval(false) {
+}
+
+/** @brief Returns the state name. */
 std::string InProgressState::getName() const {
     return "InProgress";
 }
 
-/**
- * @brief Completes work that does not require approval.
- */
+/** @brief Completes the item or sends it for approval. */
 void InProgressState::complete(WorkItem* item) {
     if (item == nullptr) {
         throw std::invalid_argument("WorkItem cannot be null");
     }
 
+    if (awaitingApproval) {
+        throw std::logic_error("Work item is already awaiting approval");
+    }
+
     if (item->requiresApproval()) {
-        throw std::logic_error(
-            "Work item requires approval before completion"
-        );
+        awaitingApproval = true;
+        item->notifyObservers("Work item awaiting approval");
+        return;
     }
 
     item->setState(new CompletedState());
 }
 
-/**
- * @brief Approval integration is not yet implemented.
- */
+/** @brief Approves an item that has been submitted. */
 void InProgressState::approve(WorkItem* item) {
     if (item == nullptr) {
         throw std::invalid_argument("WorkItem cannot be null");
     }
 
-    throw std::logic_error(
-        "Approval handling is not yet implemented"
-    );
+    if (!awaitingApproval) {
+        throw std::logic_error("Work item is not awaiting approval");
+    }
+
+    item->setState(new CompletedState());
 }
 
-/**
- * @brief Rejects a work item.
- */
+/** @brief Rejects the item with a reason. */
 void InProgressState::reject(
     WorkItem* item,
     const std::string& reason
@@ -56,17 +58,14 @@ void InProgressState::reject(
     }
 
     if (reason.empty()) {
-        throw std::invalid_argument(
-            "Rejection reason cannot be empty"
-        );
+        throw std::invalid_argument("Rejection reason cannot be empty");
     }
 
+    item->notifyObservers("Work item rejected: " + reason);
     item->setState(new RejectedState());
 }
 
-/**
- * @brief Escalates a work item for further handling.
- */
+/** @brief Moves the item to Escalated. */
 void InProgressState::escalate(WorkItem* item) {
     if (item == nullptr) {
         throw std::invalid_argument("WorkItem cannot be null");
