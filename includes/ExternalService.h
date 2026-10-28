@@ -1,4 +1,3 @@
-
 #ifndef EXTERNALSERVICE_H
 #define EXTERNALSERVICE_H
 

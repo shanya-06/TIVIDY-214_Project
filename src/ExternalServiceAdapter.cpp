@@ -1,4 +1,3 @@
-
 #include "ExternalServiceAdapter.h"
 #include "ExternalService.h"
 #include <stdexcept>
@@ -11,17 +10,17 @@ ExternalServiceAdapter::ExternalServiceAdapter(ExternalService* service): servic
     }
 }
 
-// translate and forward requests to the external service
+//forward requests to external service
 std::string ExternalServiceAdapter::executeOperation(const std::string& operation, const std::map<std::string, std::string>& data) {
-
-    std::string externalOperation = operation;
-
-    if (operation == "processPayment") {
-        externalOperation = "payment";
-    }
-    else if (operation == "verifyAcademicRecord") {
-        externalOperation = "academicVerification";
+    
+    if (operation.empty()) {
+        return "Request failed: invalid operation";
     }
 
-    return service->performRequest(externalOperation, data);
+    if (data.empty()) {
+        return "Request failed: missing data";
+    }
+
+    //forward the request to external service
+    return service->performRequest(operation, data);
 }

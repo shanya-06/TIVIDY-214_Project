@@ -29,9 +29,7 @@ public:
      * @param data the information associated with the operation.
      * @return the response from the external service.
      */
-    std::string executeOperation(
-        const std::string& operation,
-        const std::map<std::string, std::string>& data) override;
+    std::string executeOperation(const std::string& operation, const std::map<std::string, std::string>& data) override;
 };
 
 #endif
