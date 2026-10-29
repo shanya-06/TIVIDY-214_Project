@@ -32,7 +32,7 @@ CompleteWorkCommand::CompleteWorkCommand( WorkItem* item, const Map& result)
 }
 
 void CompleteWorkCommand::execute(){
-    receiver->complete(result);
+    receiver->complete();
 }
 
 void CompleteWorkCommand::undo(){}
