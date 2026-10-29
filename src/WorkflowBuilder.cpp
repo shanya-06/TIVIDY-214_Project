@@ -10,11 +10,6 @@ WorkflowBuilder& WorkflowBuilder::withDefinition(WorkflowDefinition* def){
     return *this;
 }
 
-WorkflowBuilder& WorkflowBuilder::withData(const Map& data){
-    this->data = data;
-    return *this;
-}
-
 WorkflowInstance* WorkflowBuilder::build(){
     if (!definition){
         //return message or print err msg to console
