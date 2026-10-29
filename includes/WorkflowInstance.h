@@ -23,7 +23,6 @@ class WorkflowInstance
 private:
     std::string id;
     WFStatus status;
-    Map data;
     std::vector<Command*> history;
     std::vector<WorkItem*> workItems;
     WorkflowMediator* mediator;
@@ -35,7 +34,7 @@ public:
      * @param id Workflow instance identifier.
      * @param data Initial workflow data.
      */
-    WorkflowInstance(const std::string& id, const Map& data);
+    WorkflowInstance(const std::string& id);
 
     virtual ~WorkflowInstance();
 
@@ -56,12 +55,6 @@ public:
      * @param status New status.
      */
     void setStatus(WFStatus status);
-
-    /**
-     * @brief Returns workflow data.
-     * @return Stored workflow data.
-     */
-    Map getData() const;
 
     /**
      * @brief Adds a work item to the workflow.
