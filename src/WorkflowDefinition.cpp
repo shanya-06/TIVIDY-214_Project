@@ -5,8 +5,8 @@
 WorkflowDefinition::WorkflowDefinition(const std::string& id, const std::string& name, int version)
     : id(id), name(name), version(version) {}
 
-WorkflowInstance* WorkflowDefinition::createInstance(const Map& data){
-    return new WorkflowInstance(id, data);
+WorkflowInstance* WorkflowDefinition::createInstance(){
+    return new WorkflowInstance(id);
 }
 
 std::string WorkflowDefinition::getId() const{
