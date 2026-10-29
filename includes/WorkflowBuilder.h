@@ -18,7 +18,6 @@ class WorkflowBuilder
 {
 private:
     WorkflowDefinition* definition;
-    Map data;
 public:
 
     /**
@@ -36,14 +35,6 @@ public:
      */
     WorkflowBuilder& withDefinition(WorkflowDefinition* def);
 
-    /**
-     * @brief Sets initial workflow data.
-     *
-     * @param data Workflow data.
-     *
-     * @return Reference to this builder.
-     */
-    WorkflowBuilder& withData(const Map& data);
 
     /**
      * @brief Builds a WorkflowInstance.
