@@ -4,8 +4,8 @@
 #include "WorkItem.h"
 #include "WorkflowMediator.h"
 
-WorkflowInstance::WorkflowInstance(const std::string& id, const Map& data)
-                  : id(id), status(CREATED), data(data), mediator(nullptr) {}
+WorkflowInstance::WorkflowInstance(const std::string& id)
+                  : id(id), status(CREATED), mediator(nullptr) {}
 
 WorkflowInstance::~WorkflowInstance() {}
 
@@ -19,10 +19,6 @@ WFStatus WorkflowInstance::getStatus() const{
 
 void WorkflowInstance::setStatus(WFStatus status){
     this->status = status;
-}
-
-Map WorkflowInstance::getData() const{
-    return data;
 }
 
 void WorkflowInstance::addWorkItem(WorkItem* item){
