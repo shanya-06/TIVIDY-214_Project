@@ -35,7 +35,9 @@ void CompleteWorkCommand::execute(){
     receiver->complete();
 }
 
-void CompleteWorkCommand::undo(){}
+void CompleteWorkCommand::undo(){
+  throw std::logic_error("Cannot undo a completed item.");
+}
 
 std::string CompleteWorkCommand::getDescription() const{
     return "Complete Work Item";
@@ -53,7 +55,9 @@ void RejectCommand::execute(){
     receiver->reject(reason);
 }
 
-void RejectCommand::undo() {}
+void RejectCommand::undo() {
+  throw std::logic_error("Cannot undo Reject command!");
+}
 
 std::string RejectCommand::getDescription() const{
     return "Reject Work Item";
@@ -71,7 +75,9 @@ void EscalateCommand::execute(){
     receiver->escalate();
 }
 
-void EscalateCommand::undo(){}
+void EscalateCommand::undo(){
+  throw std::logic_error("Cannot de-escalate!");
+}
 
 std::string EscalateCommand::getDescription() const{
     return "Escalate Work Item";
