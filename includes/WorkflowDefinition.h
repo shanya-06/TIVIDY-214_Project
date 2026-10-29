@@ -35,11 +35,10 @@ public:
     /**
      * @brief Creates a workflow instance from this definition.
      *
-     * @param data Initial workflow data.
      *
      * @return Newly created workflow instance.
      */
-    WorkflowInstance* createInstance(const Map& data);
+    WorkflowInstance* createInstance();
 
     /**
      * @brief getId
