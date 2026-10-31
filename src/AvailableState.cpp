@@ -1,4 +1,3 @@
-
 #include "AvailableState.h"
 #include "AssignedState.h"
 #include "WorkItem.h"

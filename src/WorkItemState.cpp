@@ -1,4 +1,3 @@
-
 #include "WorkItemState.h"
 
 #include <stdexcept>

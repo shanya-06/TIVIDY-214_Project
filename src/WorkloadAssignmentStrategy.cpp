@@ -1,4 +1,3 @@
-
 #include "WorkloadAssignmentStrategy.h"
 #include "WorkItem.h"
 #include "WorkflowParticipant.h"

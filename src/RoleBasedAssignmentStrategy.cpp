@@ -1,4 +1,3 @@
-
 #include "RoleBasedAssignmentStrategy.h"
 #include "WorkItem.h"
 #include "WorkflowParticipant.h"

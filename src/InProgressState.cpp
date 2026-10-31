@@ -1,4 +1,3 @@
-
 #include "InProgressState.h"
 #include "CompletedState.h"
 #include "RejectedState.h"
