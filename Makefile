@@ -46,3 +46,19 @@ clean:
 	rm -rf build tividy_gui tividy_demo
 
 .PHONY: all gui run demo clean
+
+# Automated unit and integration tests
+TEST_SOURCES = $(wildcard tests/*Tests.cpp)
+TEST_BINS = $(patsubst tests/%.cpp,build/tests/%,$(TEST_SOURCES))
+
+build/tests/%: tests/%.cpp $(ENGINE_OBJ) build/app/Industries.o
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(ENGINE_OBJ) $(LDLIBS)
+
+test: $(TEST_BINS)
+	@set -e; for t in $(TEST_BINS); do \
+		echo "Running $$t"; \
+		./$$t; \
+	done
+
+.PHONY: test
