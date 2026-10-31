@@ -5,7 +5,11 @@ WorkflowDefinition::WorkflowDefinition(const std::string& id, const std::string&
     : id(id), name(name), version(version) {}
 
 WorkFlowInstance* WorkflowDefinition::createInstance(WorkflowBuilder& builder){
-    builder.createInstance(id);
+    return createInstance(builder, id);
+}
+
+WorkFlowInstance* WorkflowDefinition::createInstance(WorkflowBuilder& builder, const std::string& instanceId){
+    builder.createInstance(instanceId);
     builder.addParticipants();
     builder.addCoordination();
     builder.addWorkItems();

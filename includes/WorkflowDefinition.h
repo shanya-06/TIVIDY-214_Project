@@ -40,6 +40,8 @@ public:
      * @return The finished instance (owned by the builder).
      */
     WorkFlowInstance* createInstance(WorkflowBuilder& builder);
+    /** @brief Same, but gives the new instance its own id (e.g. "INS-CLAIM-3") so its audit trail names it. */
+    WorkFlowInstance* createInstance(WorkflowBuilder& builder, const std::string& instanceId);
 
     /**
      * @brief getId

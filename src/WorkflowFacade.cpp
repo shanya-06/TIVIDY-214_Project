@@ -22,9 +22,14 @@ std::ostream& nullStream() {
 }
 }
 
-WorkflowFacade::WorkflowFacade() {}
+WorkflowFacade::WorkflowFacade()
+    : taskCreator(&adHocAudit), approvalCreator(&adHocAudit), subprocessCreator(&adHocAudit) {
+    adHocItems.registerCreator("task", &taskCreator);
+    adHocItems.registerCreator("approval", &approvalCreator);
+    adHocItems.registerCreator("subprocess", &subprocessCreator);
+}
 
-// Instances must be destroyed before the builders that own their parts.
+
 WorkflowFacade::~WorkflowFacade() {
     Output::redirect(nullptr);
     running.clear();
@@ -58,9 +63,10 @@ std::string WorkflowFacade::startWorkflow(const std::string& workflowId, const P
         std::unique_ptr<Running> r(new Running());
         r->builder.reset(t.factory(all));
         r->workflowId = workflowId;
-        r->key = workflowId + "-" + std::to_string(++counters[workflowId]);
-        r->instance = t.definition.createInstance(*r->builder);
+        r->key = workflowId + "-" + std::to_string(counters[workflowId] + 1);
+        r->instance = t.definition.createInstance(*r->builder, r->key);
         r->instance->start();
+        ++counters[workflowId];
         running.push_back(std::move(r));
         return running.back()->key;
     }
@@ -203,4 +209,55 @@ void WorkflowFacade::setAvailable(const std::string& key, const std::string& par
 
 void WorkflowFacade::showLiveMessages(bool show) {
     Output::redirect(show ? nullptr : &nullStream());
+}
+
+void WorkflowFacade::sendLiveMessagesTo(std::ostream* sink) {
+    Output::redirect(sink);
+}
+
+void WorkflowFacade::removeWorkflow(const std::string& workflowId) {
+    for (std::vector<WorkflowType>::iterator it = types.begin(); it != types.end(); ++it) {
+        if (it->definition.getId() == workflowId) {
+            types.erase(it);
+            return;
+        }
+    }
+    throw std::invalid_argument("Unknown workflow: " + workflowId);
+}
+
+void WorkflowFacade::insertWorkItem(const std::string& key, const std::string& afterItemId, const WorkItemSpec& spec) {
+    Running& r = findRunning(key);
+    WorkItem* after = findItem(r, afterItemId);
+    std::vector<WorkItem*> items = r.instance->getWorkItems();
+
+    for (WorkItem* item : items)
+        if (item->getId() == spec.id)
+            throw std::invalid_argument("This instance already has a work item " + spec.id);
+
+   
+    std::size_t current = items.size(), position = 0;
+    for (std::size_t i = 0; i < items.size(); ++i) {
+        if (current == items.size() && !items[i]->isCompleted()) current = i;
+        if (items[i] == after) position = i;
+    }
+    if (position < current)
+        throw std::logic_error("New steps can only be added after the current work (" +
+                               (current < items.size() ? items[current]->getId() : std::string("none")) + ")");
+
+    bool roleCovered = false;
+    for (WorkflowParticipant* p : r.instance->getMediator()->getParticipants())
+        if (p->getRole() == spec.role) roleCovered = true;
+    if (!roleCovered)
+        throw std::logic_error("Nobody in this instance has the role '" + spec.role + "', so the step could never be assigned");
+
+    WorkItem* item = assembleWorkItem(adHocItems, spec, r.instance->getMediator());
+    r.instance->getMediator()->registerWorkItem(item);
+    try {
+        r.instance->addWorkItemAfter(after, item);
+    } catch (...) {
+        r.instance->getMediator()->unregisterWorkItem(item);
+        delete item;
+        throw;
+    }
+    item->notifyObservers("added by hand after " + afterItemId);
 }
