@@ -1,0 +1,7 @@
+.git
+.gitignore
+build/**/*.o
+build/tests/
+tividy_gui
+tividy_demo
+*.exe

@@ -85,7 +85,7 @@ void HttpServer::open() {
     std::memset(&address, 0, sizeof address);
     address.sin_family = AF_INET;
     address.sin_port = htons(static_cast<unsigned short>(port));
-    address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);   
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(s, reinterpret_cast<sockaddr*>(&address), sizeof address) != 0 || listen(s, 16) != 0) {
         CLOSE_SOCKET(s);
