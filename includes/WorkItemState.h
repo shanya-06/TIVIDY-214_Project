@@ -1,4 +1,3 @@
-
 #ifndef WORKITEMSTATE_H
 #define WORKITEMSTATE_H
 

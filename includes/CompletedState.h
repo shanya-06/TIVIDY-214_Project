@@ -1,4 +1,3 @@
-
 #ifndef COMPLETEDSTATE_H
 #define COMPLETEDSTATE_H
 

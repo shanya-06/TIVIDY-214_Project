@@ -1,4 +1,3 @@
-
 #ifndef RULEBASEDASSIGNMENTSTRATEGY_H
 #define RULEBASEDASSIGNMENTSTRATEGY_H
 
@@ -12,6 +11,7 @@
  */
 class RuleBasedAssignmentStrategy : public AssignmentStrategy {
 private:
+    /** @brief Maximum workload allowed for a participant. */
     int maxWorkload;
 
 public:
@@ -21,6 +21,13 @@ public:
      */
     explicit RuleBasedAssignmentStrategy(int maxWorkload);
 
+    /**
+     * @brief Selects an eligible participant based on assignment rules.
+     * @param item Work item requiring assignment.
+     * @param participants List of available candidates.
+     * @return Pointer to an eligible participant, or nullptr
+     * if no participant satisfies the rules.
+     */
     WorkflowParticipant* selectParticipant(
         WorkItem* item,
         const std::vector<WorkflowParticipant*>& participants

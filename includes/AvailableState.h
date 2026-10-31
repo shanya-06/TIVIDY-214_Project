@@ -1,4 +1,3 @@
-
 #ifndef AVAILABLESTATE_H
 #define AVAILABLESTATE_H
 
