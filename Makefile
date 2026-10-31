@@ -43,7 +43,7 @@ demo: tividy_demo
 	./tividy_demo$(EXE)
 
 clean:
-	rm -rf build tividy_gui tividy_demo
+	rm -rf build/src build/app build/tests tividy_gui tividy_demo
 
 .PHONY: all gui run demo clean
 
