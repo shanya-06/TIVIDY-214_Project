@@ -11,6 +11,11 @@ COS 214 Project - TIVIDY
   - build/
     for Docker and similar files
 
+## Doxygen Instructions
+- run doxygen Doxyfile
+- in doxygenDocs/html/
+        -> index.html (documentation)
+
 # Team members: 
 Shanya Nair - u25061845
 Nasiha Osman - u25110188
