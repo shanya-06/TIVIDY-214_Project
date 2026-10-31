@@ -45,6 +45,54 @@ make gui
 make demo
 ```
 
+
+## Docker Setup
+
+The project supports Docker using an Ubuntu environment with g++, GNU Make and doctest.
+
+**Requirements:**
+- Docker Desktop or Docker Engine
+
+**Docker files:**
+- `build/Dockerfile` - Installs dependencies and builds the application.
+- `.dockerignore` - Excludes unnecessary files from the Docker build.
+
+**Build the Docker image:**
+
+```bash
+docker build -f build/Dockerfile -t tividy214 .
+```
+
+**Run the GUI:**
+
+```bash
+docker run --rm -p 8214:8214 tividy214
+```
+
+Open http://localhost:8214 in your browser.
+
+Press `Ctrl+C` to stop the container.
+
+**Run the scripted demo:**
+
+```bash
+docker run --rm tividy214 make demo
+```
+
+**Run automated tests:**
+
+```bash
+docker run --rm tividy214 make test
+```
+
+**Docker test results (31 October 2026):**
+- 33/33 tests passed
+- 123/123 assertions passed
+- 0 failures
+
+The Docker image, scripted demo, automated tests and browser GUI have all been tested successfully.
+
+
 ## Automated Testing
 
 We use the doctest framework to test important workflow functionality.
