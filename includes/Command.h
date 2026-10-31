@@ -143,4 +143,4 @@ public:
 };
 
 
-#endif //COMMAND_H
+#endif

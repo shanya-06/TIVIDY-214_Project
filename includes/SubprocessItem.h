@@ -9,4 +9,3 @@ public:
 };
 #endif
 
-//also a product
