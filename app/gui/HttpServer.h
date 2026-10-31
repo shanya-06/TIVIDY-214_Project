@@ -6,7 +6,7 @@
  * @brief A deliberately tiny HTTP/1.1 server (POSIX sockets / Winsock), so the
  * GUI needs no third-party library. It handles one request at a time, which
  * also means the engine is never called from two threads at once.
- * It only listens on 127.0.0.1: the GUI is for the local machine.
+ * Listens on all IPv4 interfaces to support Docker port mapping.
  */
 
 #include <functional>
