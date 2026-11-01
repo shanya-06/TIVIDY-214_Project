@@ -7,6 +7,8 @@
 CXX      = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Iincludes -Iapp -Iapp/gui
 LDLIBS   =
+# Extra compiler flags, e.g. make test EXTRA="-Werror" (used by the CI pipeline)
+CXXFLAGS += $(EXTRA)
 ifeq ($(OS),Windows_NT)
   LDLIBS += -lws2_32
   EXE     = .exe
@@ -51,9 +53,11 @@ clean:
 TEST_SOURCES = $(wildcard tests/*Tests.cpp)
 TEST_BINS = $(patsubst tests/%.cpp,build/tests/%,$(TEST_SOURCES))
 
-build/tests/%: tests/%.cpp $(ENGINE_OBJ) build/app/Industries.o
+TEST_LINK = $(ENGINE_OBJ) build/app/Json.o build/app/CustomWorkflow.o
+
+build/tests/%: tests/%.cpp $(TEST_LINK) $(wildcard tests/*.h)
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -o $@ $< $(ENGINE_OBJ) $(LDLIBS)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(TEST_LINK) $(LDLIBS)
 
 test: $(TEST_BINS)
 	@set -e; for t in $(TEST_BINS); do \
