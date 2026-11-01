@@ -51,6 +51,17 @@ TIVIDY-214_Project/
 │   ├── StrategyTests.cpp
 │   ├── WorkflowInstanceTests.cpp
 │   └── WorkflowIntegrationTests.cpp
+├── Activity Diagram.jpg
+├── State Diagram.jpg
+├── Work Item Processing and Recovery Activity Diagram.png
+├── Work Item Submission and Initial Processing Sequence Diagram.png
+├── Screenshot 2026-11-01 173944.png
+├── Screenshot 2026-11-01 175016.png
+├── .dockerignore
+├── .gitignore
+├── Doxyfile
+├── Makefile
+└── README.md
 
 ## Doxygen Instructions
 
