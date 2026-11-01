@@ -36,6 +36,25 @@ The project uses C++11 and GNU Make.
 - GNU Make
 - doctest (for automated testing)
 
+### Installing Dependencies (Ubuntu / WSL)
+
+Before building or testing the project, install the required tools:
+
+```bash
+sudo apt update
+sudo apt install build-essential doctest-dev
+```
+
+This installs the C++ compiler, GNU Make and the doctest testing framework.
+
+To verify that doctest is installed:
+
+```bash
+ls /usr/include/doctest/doctest.h
+```
+
+If the file is displayed, doctest is installed correctly.
+
 **Build the project:**
 
 ```bash
