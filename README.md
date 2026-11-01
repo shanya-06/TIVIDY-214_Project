@@ -7,10 +7,20 @@ https://docs.google.com/document/d/16ex4TXWQJ5i_OFzQPBb63-5x0QIYT5eZro7JFrQ3npw/
 
 ## Repo structure
 
-- Dev/ working branch
-  - includes/ for .h files
-  - src/ for .cpp files
-  - build/ for Docker and similar files
+TIVIDY-214_Project/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                      
+├── app/                                
+│   ├── gui/
+│   │   ├── GuiApi.cpp / .h          
+│   │   ├── HttpServer.cpp / .h        
+│   │   └── gui_main.cpp              
+│   ├── CustomWorkflow.cpp / .h
+│   ├── Industries.cpp / .h
+│   ├── IndustryBuilder.h
+│   ├── Json.cpp / .h                   
+│   └── main.cpp   
 
 ## Doxygen Instructions
 
