@@ -8,60 +8,35 @@ https://docs.google.com/document/d/16ex4TXWQJ5i_OFzQPBb63-5x0QIYT5eZro7JFrQ3npw/
 ## Repo structure
 
 TIVIDY-214_Project/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                      
-├── app/                                
-│   ├── gui/
-│   │   ├── GuiApi.cpp / .h          
-│   │   ├── HttpServer.cpp / .h        
-│   │   └── gui_main.cpp              
-│   ├── CustomWorkflow.cpp / .h
-│   ├── Industries.cpp / .h
-│   ├── IndustryBuilder.h
-│   ├── Json.cpp / .h                   
-│   └── main.cpp   
-├── build/
-│   └── Dockerfile
-├── data/
-│   └── custom_workflows.json           
-├── docs/
-│   └── TIVIDY 214 Project (1).pdf      
-├── gui/                              
-│   ├── index.html
-│   ├── app.js
-│   └── style.css
-├── includes/                           
-│   ├── ApprovalHandler.h … WorkloadAssignmentStrategy.h
-│   └── x.txt
-├── src/                              
-│   ├── ApprovalHandler.cpp … WorkloadAssignmentStrategy.cpp
-│   └── x.txt
-├── scripts/
-│   └── gui_smoke_test.sh
-├── tests/
-│   ├── TestHelpers.h
-│   ├── AdHocWorkItemTests.cpp
-│   ├── ApprovalTests.cpp
-│   ├── CustomWorkflowTests.cpp
-│   ├── FacadeTests.cpp
-│   ├── MediatorTests.cpp
-│   ├── RoutingRuleTests.cpp
-│   ├── StateTests.cpp
-│   ├── StrategyTests.cpp
-│   ├── WorkflowInstanceTests.cpp
-│   └── WorkflowIntegrationTests.cpp
-├── Activity Diagram.jpg
-├── State Diagram.jpg
-├── Work Item Processing and Recovery Activity Diagram.png
-├── Work Item Submission and Initial Processing Sequence Diagram.png
-├── Screenshot 2026-11-01 173944.png
-├── Screenshot 2026-11-01 175016.png
-├── .dockerignore
-├── .gitignore
-├── Doxyfile
-├── Makefile
+├── .github/workflows/   # CI pipeline
+├── app/                 # Application layer
+│   └── gui/             # GUI backend (C++)
+├── build/               # Docker setup and compiled files
+├── data/                # Saved custom workflows
+├── docs/                # Project report
+├── gui/                 # Web front-end
+├── includes/            # Engine header files (.h)
+├── src/                 # Engine source files (.cpp)
+├── scripts/             # Helper scripts
+├── tests/               # Unit tests
+├── Doxyfile             # Doxygen config
+├── Makefile             # Build script
 └── README.md
+```
+
+| Folder | Description |
+|---|---|
+| `.github/workflows/` | GitHub Actions CI. On every push or pull request to `main` or `dev`, it builds the project, runs the tests, demo and GUI smoke test, and builds the Docker image |
+| `app/` | Application layer that uses the engine: the command-line demo, the two built-in industry workflows (insurance claims and university admissions), user-designed custom workflows and a small JSON parser |
+| `app/gui/` | C++ backend for the GUI: a lightweight HTTP server and the JSON API that connects the browser to the engine |
+| `build/` | Dockerfile for building and running the project in Ubuntu. `make` also places compiled object files here |
+| `data/` | JSON file where the GUI saves user-designed workflows |
+| `docs/` | Project report (PDF) |
+| `gui/` | Web front-end (HTML, JavaScript, CSS) that runs in the browser |
+| `includes/` | Header files for the workflow engine, implementing the design patterns: Facade, Builder, Factory Method, State, Decorator, Chain of Responsibility, Strategy, Template Method, Adapter, Mediator, Observer and Command |
+| `src/` | Source files implementing the engine classes declared in `includes/` |
+| `scripts/` | Helper scripts, including a smoke test that checks the GUI server works |
+| `tests/` | doctest unit and integration tests, run with `make test` |
 
 ## Doxygen Instructions
 
