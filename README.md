@@ -5,16 +5,41 @@ COS 214 Project - TIVIDY: Generic Workflow Management System
 ## PDF link
 https://docs.google.com/document/d/16ex4TXWQJ5i_OFzQPBb63-5x0QIYT5eZro7JFrQ3npw/edit?usp=sharing
 
-## Repo structure
+## Repository Structure
 
-COS 214 Project - TIVIDY
-
-## Repo structure
-
-- Dev/ working branch
-  - includes/ for .h files
-  - src/ for .cpp files
-  - build/ for Docker and similar files
+```text
+TIVIDY-214_Project/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                  # GitHub Actions CI pipeline
+├── app/
+│   ├── gui/                        # GUI API, HTTP server and entry point
+│   ├── CustomWorkflow             # Custom workflow functionality
+│   ├── Industries                 # Industry-specific workflows
+│   ├── IndustryBuilder.h          # Industry workflow construction
+│   ├── Json                       # JSON handling
+│   └── main.cpp                   # Application entry point
+├── build/
+│   └── Dockerfile                 # Docker configuration
+├── data/
+│   └── custom_workflows.json      # Saved custom workflows
+├── docs/                          # Project documentation and reports
+├── gui/
+│   ├── index.html                 # GUI structure
+│   ├── app.js                     # Frontend functionality
+│   └── style.css                  # GUI styling
+├── includes/                      # C++ workflow engine headers
+├── src/                           # C++ workflow engine implementations
+├── scripts/
+│   └── gui_smoke_test.sh          # GUI smoke tests
+├── tests/                         # 10 automated test files and TestHelpers.h
+├── diagrams and screenshots/      # UML diagrams and supporting images
+├── .dockerignore                  # Docker exclusions
+├── .gitignore                     # Git exclusions
+├── Doxyfile                       # Doxygen configuration
+├── Makefile                       # Build and test automation
+└── README.md                      # Project documentation
+```
 
 
 ## Doxygen Instructions
