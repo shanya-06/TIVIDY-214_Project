@@ -1,6 +1,8 @@
 # TIVIDY-214_Project
 
 COS 214 Project - TIVIDY
+## PDF Document
+https://docs.google.com/document/d/16ex4TXWQJ5i_OFzQPBb63-5x0QIYT5eZro7JFrQ3npw/edit?usp=sharing
 
 ## Repo structure
 
