@@ -7,36 +7,15 @@ https://docs.google.com/document/d/16ex4TXWQJ5i_OFzQPBb63-5x0QIYT5eZro7JFrQ3npw/
 
 ## Repo structure
 
-TIVIDY-214_Project/
-├── .github/workflows/   # CI pipeline
-├── app/                 # Application layer
-│   └── gui/             # GUI backend (C++)
-├── build/               # Docker setup and compiled files
-├── data/                # Saved custom workflows
-├── docs/                # Project report
-├── gui/                 # Web front-end
-├── includes/            # Engine header files (.h)
-├── src/                 # Engine source files (.cpp)
-├── scripts/             # Helper scripts
-├── tests/               # Unit tests
-├── Doxyfile             # Doxygen config
-├── Makefile             # Build script
-└── README.md
-```
+COS 214 Project - TIVIDY
 
-| Folder | Description |
-|---|---|
-| `.github/workflows/` | GitHub Actions CI. On every push or pull request to `main` or `dev`, it builds the project, runs the tests, demo and GUI smoke test, and builds the Docker image |
-| `app/` | Application layer that uses the engine: the command-line demo, the two built-in industry workflows (insurance claims and university admissions), user-designed custom workflows and a small JSON parser |
-| `app/gui/` | C++ backend for the GUI: a lightweight HTTP server and the JSON API that connects the browser to the engine |
-| `build/` | Dockerfile for building and running the project in Ubuntu. `make` also places compiled object files here |
-| `data/` | JSON file where the GUI saves user-designed workflows |
-| `docs/` | Project report (PDF) |
-| `gui/` | Web front-end (HTML, JavaScript, CSS) that runs in the browser |
-| `includes/` | Header files for the workflow engine, implementing the design patterns: Facade, Builder, Factory Method, State, Decorator, Chain of Responsibility, Strategy, Template Method, Adapter, Mediator, Observer and Command |
-| `src/` | Source files implementing the engine classes declared in `includes/` |
-| `scripts/` | Helper scripts, including a smoke test that checks the GUI server works |
-| `tests/` | doctest unit and integration tests, run with `make test` |
+## Repo structure
+
+- Dev/ working branch
+  - includes/ for .h files
+  - src/ for .cpp files
+  - build/ for Docker and similar files
+
 
 ## Doxygen Instructions
 
