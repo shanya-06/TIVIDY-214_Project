@@ -11,9 +11,9 @@ https://docs.google.com/document/d/16ex4TXWQJ5i_OFzQPBb63-5x0QIYT5eZro7JFrQ3npw/
 TIVIDY-214_Project/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml                  # GitHub Actions CI pipeline
+│       └── ci.yml                 # GitHub Actions CI pipeline
 ├── app/
-│   ├── gui/                        # GUI API, HTTP server and entry point
+│   ├── gui/                       # GUI API, HTTP server and entry point
 │   ├── CustomWorkflow             # Custom workflow functionality
 │   ├── Industries                 # Industry-specific workflows
 │   ├── IndustryBuilder.h          # Industry workflow construction
@@ -33,7 +33,7 @@ TIVIDY-214_Project/
 ├── scripts/
 │   └── gui_smoke_test.sh          # GUI smoke tests
 ├── tests/                         # 10 automated test files and TestHelpers.h
-├── diagrams and screenshots/      # UML diagrams and supporting images
+├── diagrams and screenshots       # UML diagrams and supporting images
 ├── .dockerignore                  # Docker exclusions
 ├── .gitignore                     # Git exclusions
 ├── Doxyfile                       # Doxygen configuration
