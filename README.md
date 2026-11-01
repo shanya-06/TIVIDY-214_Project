@@ -1,4 +1,4 @@
-# TIVIDY-214_Project
+# TIVIDY-214_Project By The Seven
 
 COS 214 Project - TIVIDY: Generic Workflow Management System
 
