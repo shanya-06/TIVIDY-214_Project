@@ -1,0 +1,11 @@
+# compiled output (build/ also holds the Dockerfile, which stays tracked)
+build/src/
+build/app/
+build/tests/
+tividy_gui
+tividy_demo
+*.exe
+# CI output
+test-results/
+gui_server.log
+demo-output.txt
