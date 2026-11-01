@@ -1,6 +1,6 @@
 # TIVIDY-214_Project
 
-COS 214 Project - TIVIDY
+COS 214 Project - TIVIDY: Generic Workflow Management System
 
 ## PDF link
 https://docs.google.com/document/d/16ex4TXWQJ5i_OFzQPBb63-5x0QIYT5eZro7JFrQ3npw/edit?usp=sharing
