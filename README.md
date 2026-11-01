@@ -21,6 +21,36 @@ TIVIDY-214_Project/
 │   ├── IndustryBuilder.h
 │   ├── Json.cpp / .h                   
 │   └── main.cpp   
+├── build/
+│   └── Dockerfile
+├── data/
+│   └── custom_workflows.json           
+├── docs/
+│   └── TIVIDY 214 Project (1).pdf      
+├── gui/                              
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
+├── includes/                           
+│   ├── ApprovalHandler.h … WorkloadAssignmentStrategy.h
+│   └── x.txt
+├── src/                              
+│   ├── ApprovalHandler.cpp … WorkloadAssignmentStrategy.cpp
+│   └── x.txt
+├── scripts/
+│   └── gui_smoke_test.sh
+├── tests/
+│   ├── TestHelpers.h
+│   ├── AdHocWorkItemTests.cpp
+│   ├── ApprovalTests.cpp
+│   ├── CustomWorkflowTests.cpp
+│   ├── FacadeTests.cpp
+│   ├── MediatorTests.cpp
+│   ├── RoutingRuleTests.cpp
+│   ├── StateTests.cpp
+│   ├── StrategyTests.cpp
+│   ├── WorkflowInstanceTests.cpp
+│   └── WorkflowIntegrationTests.cpp
 
 ## Doxygen Instructions
 
