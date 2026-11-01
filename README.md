@@ -9,6 +9,11 @@ COS 214 Project - TIVIDY
   - src/ for .cpp files
   - build/ for Docker and similar files
 
+## Doxygen Instructions
+
+- Run `doxygen Doxyfile`
+- Open `doxygenDocs/html/index.html` to view the documentation
+
 ## Team members:
 
 Shanya Nair - u25061845
