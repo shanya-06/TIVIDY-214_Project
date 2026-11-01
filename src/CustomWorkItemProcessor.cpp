@@ -29,7 +29,6 @@ void CustomWorkItemProcessor::validate(WorkItem* item)
 
 void CustomWorkItemProcessor::execute(WorkItem* item)
 {
-    item->start();
 
     item->notifyObservers("Work item executed by custom processor");
 }

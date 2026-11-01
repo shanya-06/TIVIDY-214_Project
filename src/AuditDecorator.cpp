@@ -26,8 +26,8 @@ void AuditDecorator::start() {
     catch (...) { record("start: FAILED"); throw; }
 }
 
-void AuditDecorator::complete(const Map& result) {
-    try { WorkItemDecorator::complete(result); record("complete: ok"); }
+void AuditDecorator::complete() {
+    try { WorkItemDecorator::complete(); record("complete: ok"); }
     catch (...) { record("complete: FAILED"); throw; }
 }
 

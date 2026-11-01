@@ -1,50 +1,41 @@
 #ifndef WORKFLOWBUILDER_H
 #define WORKFLOWBUILDER_H
 
-class WorkflowDefinition;
-class WorkflowInstance;
+#include <string>
+
+class WorkFlowInstance;
 
 /**
  * @class WorkflowBuilder
- * @brief Builds WorkflowInstance objects in pieces
+ * @brief Abstract Builder: the steps needed to assemble a WorkFlowInstance.
  *
- * Stores construction parameters and creates
- * WorkflowInstance objects through build().
+ * A concrete builder (one per kind of workflow) fills in each step. The
+ * WorkflowDefinition (the Director) calls the steps in the right order.
+ * The concrete builder owns the parts it creates (participants, strategy,
+ * approval chain, ...) and must outlive the instance it built.
  *
  * Gang of Four Pattern:
- * - Builder -> Concrete Builder
+ * - Builder -> Abstract Builder
  */
 class WorkflowBuilder
 {
-private:
-    WorkflowDefinition* definition;
 public:
+    virtual ~WorkflowBuilder() {}
 
-    /**
-     * @brief Creates an empty workflow builder.
-     */
-    WorkflowBuilder();
+    /** @brief Step 1: creates the empty instance and its Mediator. */
+    virtual void createInstance(const std::string& id) = 0;
 
-    /**
-     * @brief Sets the workflow definition used
-     *        during construction.
-     *
-     * @param def Workflow definition.
-     *
-     * @return Reference to this builder.
-     */
-    WorkflowBuilder& withDefinition(WorkflowDefinition* def);
+    /** @brief Step 2: creates the participants and registers them with the Mediator. */
+    virtual void addParticipants() = 0;
 
+    /** @brief Step 3: gives the Mediator its strategy, approval chain, processor and adapter. */
+    virtual void addCoordination() = 0;
 
-    /**
-     * @brief Builds a WorkflowInstance.
-     *
-     * @throws std::logic_error if no definition
-     *         has been provided.
-     *
-     * @return Newly created workflow instance.
-     */
-    WorkflowInstance* build();
+    /** @brief Step 4: creates the work items and adds them to the instance. */
+    virtual void addWorkItems() = 0;
+
+    /** @brief The finished instance (Product). */
+    virtual WorkFlowInstance* getInstance() = 0;
 };
 
 #endif

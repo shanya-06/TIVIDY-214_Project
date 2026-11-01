@@ -13,11 +13,17 @@ static WorkItem* checked(WorkItem* component) {
 WorkItemDecorator::WorkItemDecorator(WorkItem* component)
     : WorkItem(checked(component)->getId(), component->getName(), component->getRequiredRole(),
                component->requiresApproval(), component->getMediator()),
-      component(component) {}
+      component(component) {
+    component->setOutermost(this);   // the Mediator will now talk to the decorator
+}
 
 WorkItemDecorator::~WorkItemDecorator() {
     delete component;
 }
+
+void WorkItemDecorator::setOutermost(WorkItem* item) { component->setOutermost(item); }
+
+WorkItemProcessor* WorkItemDecorator::getProcessor() const { return component->getProcessor(); }
 
 // Identity
 std::string WorkItemDecorator::getId() const { return component->getId(); }
@@ -44,3 +50,10 @@ void WorkItemDecorator::escalate() { component->escalate(); }
 void WorkItemDecorator::setState(WorkItemState* state) { component->setState(state); }
 WorkItemState* WorkItemDecorator::getState() const { return component->getState(); }
 std::string WorkItemDecorator::getStateName() const { return component->getStateName(); }
+bool WorkItemDecorator::canBeAssigned() const { return component->canBeAssigned(); }
+bool WorkItemDecorator::isCompleted() const { return component->isCompleted(); }
+bool WorkItemDecorator::isAwaitingApproval() const { return component->isAwaitingApproval(); }
+bool WorkItemDecorator::canBeEscalated() const { return component->canBeEscalated(); }
+bool WorkItemDecorator::isRejected() const { return component->isRejected(); }
+bool WorkItemDecorator::isInProgress() const { return component->isInProgress(); }
+bool WorkItemDecorator::isCreated() const { return component->isCreated(); }

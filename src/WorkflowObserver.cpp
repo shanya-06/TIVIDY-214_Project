@@ -1,21 +1,26 @@
 #include "WorkflowObserver.h"
 #include "WorkItem.h"
-#include <iostream>
+#include "Output.h"
 
 //record work item activity
 void AuditObserver::update(WorkItem* item, const std::string& event) {
     if (!item) return;
 
-    std::cout << "[audit] work item " << item->getId()
+    log.push_back(item->getId() + " (" + item->getName() + "): " + event);
+    Output::stream() << "[audit] work item " << item->getId()
               << " (" << item->getName() << "): "
               << event << std::endl;
+}
+
+const std::vector<std::string>& AuditObserver::getLog() const {
+    return log;
 }
 
 // notify relevant participants
 void NotificationObserver::update(WorkItem* item, const std::string& event) {
     if (!item) return;
 
-    std::cout << "[notification] work item "
+    Output::stream() << "[notification] work item "
               << item->getName()
               << ": " << event << std::endl;
 }
@@ -24,7 +29,7 @@ void NotificationObserver::update(WorkItem* item, const std::string& event) {
 void MonitoringObserver::update(WorkItem* item, const std::string& event) {
     if (!item) return;
 
-    std::cout << "[monitoring] work item "
+    Output::stream() << "[monitoring] work item "
               << item->getId()
               << " is now " << item->getStateName()
               << " (event: " << event << ")"

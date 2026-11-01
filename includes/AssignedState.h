@@ -1,4 +1,3 @@
-
 #ifndef ASSIGNEDSTATE_H
 #define ASSIGNEDSTATE_H
 
@@ -9,6 +8,7 @@ class AssignedState : public WorkItemState {
 public:
     /** @brief Returns the state name. */
     std::string getName() const override;
+    bool canEscalate() const override { return true; }
 
     /** @brief Starts the assigned work item. */
     void start(WorkItem* item) override;

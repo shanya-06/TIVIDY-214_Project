@@ -6,6 +6,7 @@
 #include "Command.h"
 #include "WorkItem.h"
 #include "WorkflowMediator.h"
+#include "WorkflowParticipant.h"
 
 WorkFlowInstance::WorkFlowInstance(const std::string& id)
     : id(id), status(CREATED), mediator(nullptr) {}
@@ -31,8 +32,27 @@ void WorkFlowInstance::addWorkItem(WorkItem* item) {
     if (std::find(workItems.begin(), workItems.end(), item) != workItems.end()) {
         return;
     }
+    item->markOwned();
     workItems.push_back(item);
     item->attach(this);
+}
+
+void WorkFlowInstance::addWorkItemAfter(WorkItem* after, WorkItem* item) {
+    std::vector<WorkItem*>::iterator position = std::find(workItems.begin(), workItems.end(), after);
+    if (!item || position == workItems.end()) {
+        throw std::invalid_argument("Cannot insert a work item after an item that is not in instance '" + id + "'");
+    }
+    item->markOwned();
+    workItems.insert(position + 1, item);
+    item->attach(this);
+}
+
+void WorkFlowInstance::setRoutingRule(RoutingRule rule) {
+    routingRule = rule;
+}
+
+const std::vector<std::string>& WorkFlowInstance::getEvents() const {
+    return events;
 }
 
 std::vector<WorkItem*> WorkFlowInstance::getWorkItems() const {
@@ -64,6 +84,23 @@ void WorkFlowInstance::executeCommand(Command* command) {
     history.push_back(command);
 }
 
+void WorkFlowInstance::cancel() {
+    if (status != RUNNING) {
+        throw std::logic_error("Instance '" + id + "' is not running, so it cannot be cancelled");
+    }
+    status = CANCELLED;
+    events.push_back("instance " + id + ": cancelled");
+    for (WorkItem* item : workItems) {
+        if (item->getAssignee() && !item->isCompleted() && !item->isRejected()) {
+            item->getAssignee()->decrementWorkload();
+        }
+    }
+}
+
+std::vector<Command*> WorkFlowInstance::getHistory() const {
+    return history;
+}
+
 void WorkFlowInstance::start() {
     if (status != CREATED) {
         throw std::logic_error("Instance '" + id + "' has already been started");
@@ -82,9 +119,15 @@ WFStatus WorkFlowInstance::getStatus() const {
 }
 
 void WorkFlowInstance::update(WorkItem* item, const std::string& event) {
-    (void)item; // may be the inner item of a decorator, so we never compare it with workItems
+    // item may be the inner item of a decorator, so we never compare it with workItems
+    events.push_back(item->getId() + " (" + item->getName() + "): " + event);
+    // A state-change event carries the new state's name; other messages on a finished item must not re-route.
+    const bool completed = (status == RUNNING && item->isCompleted() && event == item->getStateName());
+    if (completed && routingRule) {
+        routingRule(*this, item);   // the industry may add a step here
+    }
     updateStatus();
-    if (status == RUNNING && event == "Completed") {
+    if (completed && status == RUNNING) {
         openNextItem();
     }
 }
@@ -93,7 +136,7 @@ void WorkFlowInstance::openNextItem() {
     // Copy first: makeAvailable() changes state, which calls update() again.
     std::vector<WorkItem*> items(workItems);
     for (WorkItem* next : items) {
-        if (next->getStateName() == "Created") {
+        if (next->isCreated()) {
             next->makeAvailable();
             return;
         }
@@ -106,12 +149,11 @@ void WorkFlowInstance::updateStatus() {
     }
     bool allCompleted = true;
     for (WorkItem* item : workItems) {
-        const std::string state = item->getStateName();
-        if (state == "Rejected") {
+        if (item->isRejected()) {
             status = FAILED;
             return;
         }
-        if (state != "Completed") {
+        if (!item->isCompleted()) {
             allCompleted = false;
         }
     }

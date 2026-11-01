@@ -1,0 +1,115 @@
+# Continuous integration for TIVIDY.
+# On every push and pull request to main or dev:
+#   - build with warnings as errors (g++ and clang), run all unit tests (make test),
+#     the scripted demo and a smoke test of the GUI server
+#   - run the unit tests again with AddressSanitizer and UndefinedBehaviorSanitizer
+#   - build the Docker image (build/Dockerfile) and run the tests inside it
+# On a push to main, a ready-to-run Linux package is uploaded as a build artifact.
+
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build and test (${{ matrix.cxx }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        cxx: [g++, clang++]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install doctest
+        run: sudo apt-get update && sudo apt-get install -y doctest-dev
+
+      - name: Compiler version
+        run: ${{ matrix.cxx }} --version
+
+      - name: Build (warnings are errors)
+        run: make -j4 all CXX=${{ matrix.cxx }} EXTRA="-Werror"
+
+      - name: Unit tests
+        run: make -j4 test CXX=${{ matrix.cxx }} EXTRA="-Werror"
+
+      - name: Unit test reports (JUnit)
+        if: always()
+        run: |
+          mkdir -p test-results
+          for t in build/tests/*Tests; do
+            "$t" --reporters=junit --out="test-results/$(basename "$t").xml" || true
+          done
+
+      - name: Scripted demo
+        run: |
+          ./tividy_demo > demo-output.txt
+          tail -n 25 demo-output.txt
+
+      - name: GUI smoke test
+        run: bash scripts/gui_smoke_test.sh
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.cxx }}
+          path: |
+            test-results/
+            demo-output.txt
+            gui_server.log
+          if-no-files-found: ignore
+
+  sanitizers:
+    name: Unit tests with sanitizers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install doctest
+        run: sudo apt-get update && sudo apt-get install -y doctest-dev
+      - name: Build and run tests with ASan + UBSan
+        run: make -j4 test EXTRA="-g -fsanitize=address,undefined -fno-sanitize-recover=undefined -fno-omit-frame-pointer"
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -f build/Dockerfile -t tividy214 .
+      - name: Run tests in the container
+        run: docker run --rm tividy214 make test
+      - name: Run the demo in the container
+        run: docker run --rm tividy214 make demo
+      - name: GUI responds from the container
+        run: |
+          docker run -d --name tividy -p 8214:8214 tividy214
+          for i in $(seq 1 30); do curl -sf http://127.0.0.1:8214/api/overview > /dev/null && break; sleep 1; done
+          curl -sf http://127.0.0.1:8214/api/overview | grep -q INS-CLAIM && echo "GUI is up"
+          docker rm -f tividy
+
+  package:
+    name: Package (main only)
+    needs: [build-and-test, sanitizers, docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Release build
+        run: make -j4 all EXTRA="-O2"
+      - name: Assemble package
+        run: |
+          mkdir -p package/tividy
+          cp tividy_gui tividy_demo package/tividy/
+          cp -r gui package/tividy/
+          cp README.md package/tividy/
+          tar -czf tividy-linux.tar.gz -C package tividy
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tividy-linux
+          path: tividy-linux.tar.gz

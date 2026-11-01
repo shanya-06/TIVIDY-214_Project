@@ -19,6 +19,7 @@ public:
      * @return "Rejected".
      */
     std::string getName() const override;
+    bool isRejected() const override { return true; }
 };
 
 #endif

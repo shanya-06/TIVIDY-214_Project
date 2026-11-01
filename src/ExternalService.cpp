@@ -1,4 +1,3 @@
-
 #include "ExternalService.h"
 #include <stdexcept>
 

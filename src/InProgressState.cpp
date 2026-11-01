@@ -1,4 +1,3 @@
-
 #include "InProgressState.h"
 #include "CompletedState.h"
 #include "RejectedState.h"
@@ -29,6 +28,7 @@ void InProgressState::complete(WorkItem* item) {
     if (item->requiresApproval()) {
         awaitingApproval = true;
         item->notifyObservers("Work item awaiting approval");
+        item->changed(); // lets the Mediator start the approval chain
         return;
     }
 

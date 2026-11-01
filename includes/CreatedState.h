@@ -1,4 +1,3 @@
-
 #ifndef CREATEDSTATE_H
 #define CREATEDSTATE_H
 
@@ -15,6 +14,7 @@
 class CreatedState : public WorkItemState {
 public:
     std::string getName() const override;
+    bool isCreated() const override { return true; }
 
     /**
      * @brief Transitions the work item to AvailableState.

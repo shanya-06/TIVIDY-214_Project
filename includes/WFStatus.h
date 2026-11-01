@@ -14,4 +14,4 @@ enum WFStatus
     FAILED
 };
 
-#endif // WFSTATUS_H
+#endif 

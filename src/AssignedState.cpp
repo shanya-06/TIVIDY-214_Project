@@ -1,4 +1,3 @@
-
 #include "AssignedState.h"
 #include "InProgressState.h"
 #include "EscalatedState.h"

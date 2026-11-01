@@ -2,6 +2,7 @@
 #define WORKFLOWOBSERVER_H
 
 #include <string>
+#include <vector>
 
 class WorkItem;
 
@@ -43,6 +44,12 @@ public:
      * @param event description of the event that occurred.
      */
     void update(WorkItem* item, const std::string& event) override;
+
+    /** @brief every event recorded so far, oldest first. */
+    const std::vector<std::string>& getLog() const;
+
+private:
+    std::vector<std::string> log;
 };
 
 /**

@@ -59,6 +59,11 @@ void WorkflowMediator::registerParticipant(WorkflowParticipant* participant)
     }
 }
 
+std::vector<WorkflowParticipant*> WorkflowMediator::getParticipants() const
+{
+    return participants;
+}
+
 void WorkflowMediator::unregisterParticipant(
     WorkflowParticipant* participant)
 {
@@ -99,11 +104,45 @@ void WorkflowMediator::notify(WorkflowColleague* originator)
 
     if(item != nullptr)
     {
+        item = item->getOutermost();   // act through the decorators
+    }
+
+    if(item != nullptr)
+    {
         /*
          * A WorkItem reports its change to the Mediator.
          * The Mediator can coordinate the next workflow action.
          */
-        if(item->getAssignee() == nullptr)
+        if(item->isCompleted())
+        {
+            notifyCompleted(item);
+        }
+        else if(item->isRejected())
+        {
+            // A rejected item is finished: free the assignee, but do not process it further.
+            if(item->getAssignee() != nullptr)
+            {
+                item->getAssignee()->decrementWorkload();
+            }
+        }
+        else if(item->isAwaitingApproval())
+        {
+            requestApproval(item);
+        }
+        else if(item->isInProgress())
+        {
+            // Work just started: validate, execute and route it (Template Method).
+            WorkItemProcessor* itemProcessor = item->getProcessor();
+            if(itemProcessor == nullptr)
+            {
+                itemProcessor = processor;
+            }
+            if(itemProcessor != nullptr)
+            {
+                itemProcessor->process(item);
+            }
+        }
+        else if(item->getAssignee() == nullptr && item->canBeAssigned())
         {
             requestAssignment(item);
         }
@@ -113,15 +152,44 @@ void WorkflowMediator::notify(WorkflowColleague* originator)
 
     WorkflowParticipant* participant = dynamic_cast<WorkflowParticipant*>(originator);
 
-    if(participant != nullptr && !participant->getAvailable())
+    if(participant == nullptr)
     {
+        return;
+    }
+
+    if(!participant->getAvailable())
+    {
+        /*
+         * The participant became unavailable: every item they hold is
+         * escalated (the only lifecycle move that allows reassignment)
+         * and then handed to someone else by the AssignmentStrategy.
+         */
         for(std::vector<WorkItem*>::iterator it = workItems.begin();it != workItems.end(); ++it)
         {
             WorkItem* itemForParticipant = *it;
 
-            if (itemForParticipant != nullptr && itemForParticipant->getAssignee() == participant)
+            if (itemForParticipant != nullptr
+                && itemForParticipant->getAssignee() == participant
+                && itemForParticipant->canBeEscalated())
             {
+                itemForParticipant->escalate();
                 reassign(itemForParticipant);
+            }
+        }
+    }
+    else
+    {
+        /*
+         * The participant is available again: items that were waiting
+         * for someone (Available or Escalated) get another chance.
+         */
+        for(std::vector<WorkItem*>::iterator it = workItems.begin();it != workItems.end(); ++it)
+        {
+            WorkItem* waiting = *it;
+
+            if (waiting != nullptr && waiting->canBeAssigned())
+            {
+                requestAssignment(waiting);
             }
         }
     }
@@ -145,19 +213,13 @@ void WorkflowMediator::requestAssignment(WorkItem* item)
     WorkflowParticipant* previousParticipant =
         item->getAssignee();
 
-    if (previousParticipant == selectedParticipant)
+    if (previousParticipant == selectedParticipant && !item->canBeAssigned())
     {
         return;
     }
 
+    // WorkItem::assign() keeps the participants' workloads up to date.
     item->assign(selectedParticipant);
-
-    if (previousParticipant != nullptr)
-    {
-        previousParticipant->decrementWorkload();
-    }
-
-    selectedParticipant->incrementWorkload();
 }
 
 void WorkflowMediator::requestApproval(WorkItem* item)
@@ -184,10 +246,6 @@ void WorkflowMediator::notifyCompleted(WorkItem* item)
         participant->decrementWorkload();
     }
 
-    if(processor != nullptr)
-    {
-        processor->process(item);
-    }
 }
 
 void WorkflowMediator::reassign(WorkItem* item)

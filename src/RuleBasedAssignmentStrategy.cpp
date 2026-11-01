@@ -1,4 +1,3 @@
-
 #include "RuleBasedAssignmentStrategy.h"
 #include "WorkItem.h"
 #include "WorkflowParticipant.h"

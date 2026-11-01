@@ -91,6 +91,10 @@ public:
      */
     void registerParticipant(WorkflowParticipant* participant);
     /**
+     * @brief The registered participants (for display).
+     */
+    std::vector<WorkflowParticipant*> getParticipants() const;
+    /**
      * @brief Removes a participant from coordination.
      *
      * @param participant Participant to unregister.
@@ -109,7 +113,9 @@ public:
      */
     void setApprovalHandler(ApprovalHandler* handler);
     /**
-     * @brief Sets the WorkItem processor.
+     * @brief Sets the default WorkItem processor.
+     *
+     * It runs when work starts on an item that has no processor of its own.
      *
      * @param processor Processor used to process WorkItems.
      */
@@ -148,8 +154,7 @@ public:
     /**
      * @brief Handles completion of a WorkItem.
      *
-     * Decreases the assignee's workload and sends the WorkItem to
-     * the configured processor when one is available.
+     * Decreases the assignee's workload.
      *
      * @param item Completed WorkItem.
      */

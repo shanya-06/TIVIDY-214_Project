@@ -6,13 +6,13 @@ DeadlineDecorator::DeadlineDecorator(WorkItem* component, std::time_t deadline)
 std::time_t DeadlineDecorator::getDeadline() const { return deadline; }
 
 bool DeadlineDecorator::isOverdue() const {
-    return std::time(nullptr) > deadline && getStateName() != "Completed";
+    return std::time(nullptr) > deadline && !isCompleted();
 }
 
 bool DeadlineDecorator::wasCompletedLate() const { return completedLate; }
 
-void DeadlineDecorator::complete(const Map& result) {
+void DeadlineDecorator::complete() {
     const bool late = std::time(nullptr) > deadline;
-    WorkItemDecorator::complete(result); // throws if the state does not allow it
+    WorkItemDecorator::complete(); // throws if the state does not allow it
     completedLate = late;
 }

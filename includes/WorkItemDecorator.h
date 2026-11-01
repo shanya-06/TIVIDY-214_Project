@@ -30,6 +30,8 @@ public:
     /** @name Identity (forwarded to the wrapped item) */
     ///@{
     /** @copydoc WorkItem::getId */
+    virtual void setOutermost(WorkItem* item) override;
+    virtual WorkItemProcessor* getProcessor() const override;
     virtual std::string getId() const override;
     /** @copydoc WorkItem::getName */
     virtual std::string getName() const override;
@@ -77,6 +79,13 @@ public:
     virtual WorkItemState* getState() const override;
     /** @copydoc WorkItem::getStateName */
     virtual std::string getStateName() const override;
+    virtual bool canBeAssigned() const override;
+    virtual bool canBeEscalated() const override;
+    virtual bool isCreated() const override;
+    virtual bool isInProgress() const override;
+    virtual bool isRejected() const override;
+    virtual bool isCompleted() const override;
+    virtual bool isAwaitingApproval() const override;
     ///@}
  
 protected:

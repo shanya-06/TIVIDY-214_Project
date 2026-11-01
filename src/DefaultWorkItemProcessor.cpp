@@ -27,7 +27,7 @@ void DefaultWorkItemProcessor::validate(WorkItem* item)
 
 void DefaultWorkItemProcessor::execute(WorkItem* item)
 {
-    item->start();
+    item->notifyObservers("Work item executed by default processor");
 }
 
 void DefaultWorkItemProcessor::route(WorkItem* item)

@@ -1,6 +1,6 @@
 #include "NotificationDecorator.h"
 
-#include <iostream>
+#include "Output.h"
 
 #include "WorkflowParticipant.h"
 
@@ -8,7 +8,7 @@ NotificationDecorator::NotificationDecorator(WorkItem* component, const std::str
     : WorkItemDecorator(component), recipient(recipient) {}
 
 void NotificationDecorator::notify(const std::string& message) const {
-    std::cout << "[Notify " << recipient << "] " << message << std::endl;
+    Output::stream() << "[Notify " << recipient << "] " << message << std::endl;
 }
 
 // Forward first, notify second: if the state throws, no notification is sent.
@@ -22,8 +22,8 @@ void NotificationDecorator::start() {
     notify("'" + getName() + "' started");
 }
 
-void NotificationDecorator::complete(const Map& result) {
-    WorkItemDecorator::complete(result);
+void NotificationDecorator::complete() {
+    WorkItemDecorator::complete();
     notify("'" + getName() + "' completed");
 }
 

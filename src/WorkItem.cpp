@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "WorkItemState.h"
+#include "WorkflowParticipant.h"
 #include "WorkflowObserver.h"
 
 WorkItem::WorkItem(const std::string& id, const std::string& name, const std::string& requiredRole,
@@ -13,6 +14,9 @@ WorkItem::WorkItem(const std::string& id, const std::string& name, const std::st
       name(name),
       requiredRole(requiredRole),
       needsApproval(needsApproval),
+      outermost(this),
+      owned(false),
+      processor(nullptr),
       state(nullptr),
       assignee(nullptr) {}
 
@@ -34,6 +38,29 @@ std::string WorkItem::getRequiredRole() const {
 
 bool WorkItem::requiresApproval() const {
     return needsApproval;
+}
+
+void WorkItem::markOwned() {
+    if (owned) {
+        throw std::logic_error("Work item '" + id + "' already belongs to a workflow instance");
+    }
+    owned = true;
+}
+
+void WorkItem::setOutermost(WorkItem* item) {
+    outermost = item;
+}
+
+WorkItem* WorkItem::getOutermost() const {
+    return outermost;
+}
+
+void WorkItem::setProcessor(WorkItemProcessor* newProcessor) {
+    processor = newProcessor;
+}
+
+WorkItemProcessor* WorkItem::getProcessor() const {
+    return processor;
 }
 
 // Observer
@@ -72,11 +99,15 @@ void WorkItem::assign(WorkflowParticipant* participant) {
     assignee = participant;
     try {
         requireState()->assign(this, participant);
-        changed();
+        if (previous) {
+            previous->decrementWorkload();
+        }
+        participant->incrementWorkload();
     } catch (...) {
         assignee = previous;
         throw;
     }
+    changed();
 }
 
 WorkflowParticipant* WorkItem::getAssignee() const {
@@ -119,6 +150,34 @@ void WorkItem::setState(WorkItemState* newState) {
 
 WorkItemState* WorkItem::getState() const {
     return state;
+}
+
+bool WorkItem::canBeAssigned() const {
+    return state && state->canAssign();
+}
+
+bool WorkItem::canBeEscalated() const {
+    return state && state->canEscalate();
+}
+
+bool WorkItem::isCreated() const {
+    return state && state->isCreated();
+}
+
+bool WorkItem::isInProgress() const {
+    return state && state->isInProgress();
+}
+
+bool WorkItem::isRejected() const {
+    return state && state->isRejected();
+}
+
+bool WorkItem::isCompleted() const {
+    return state && state->isCompleted();
+}
+
+bool WorkItem::isAwaitingApproval() const {
+    return state && state->isAwaitingApproval();
 }
 
 std::string WorkItem::getStateName() const {
