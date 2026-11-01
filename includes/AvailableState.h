@@ -1,4 +1,3 @@
-
 #ifndef AVAILABLESTATE_H
 #define AVAILABLESTATE_H
 
@@ -18,6 +17,7 @@ public:
      * @brief Returns the name of this state.
      */
     std::string getName() const override;
+    bool canAssign() const override { return true; }
 
     /**
      * @brief Assigns the work item to a participant.

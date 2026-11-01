@@ -2,7 +2,8 @@
 #define WORKFLOWDEFINITION_H
 
 #include <string>
-class WorkflowInstance;
+class WorkFlowInstance;
+class WorkflowBuilder;
 
 /**
  * @class WorkflowDefinition
@@ -13,7 +14,7 @@ class WorkflowInstance;
  * objects are created through createInstance().
  *
  * Gang of Four Pattern:
- * - Builder -> Abstract Product
+ * - Builder -> Director
  */
 class WorkflowDefinition
 {
@@ -33,12 +34,14 @@ public:
     WorkflowDefinition(const std::string& id, const std::string& name, int version);
 
     /**
-     * @brief Creates a workflow instance from this definition.
+     * @brief Director: has the builder build an instance, step by step.
      *
-     *
-     * @return Newly created workflow instance.
+     * @param builder Concrete builder for this kind of workflow.
+     * @return The finished instance (owned by the builder).
      */
-    WorkflowInstance* createInstance();
+    WorkFlowInstance* createInstance(WorkflowBuilder& builder);
+    /** @brief Same, but gives the new instance its own id (e.g. "INS-CLAIM-3") so its audit trail names it. */
+    WorkFlowInstance* createInstance(WorkflowBuilder& builder, const std::string& instanceId);
 
     /**
      * @brief getId

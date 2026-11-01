@@ -1,4 +1,3 @@
-
 #ifndef COMPLETEDSTATE_H
 #define COMPLETEDSTATE_H
 
@@ -19,6 +18,7 @@ public:
      * @return "Completed".
      */
     std::string getName() const override;
+    bool isCompleted() const override { return true; }
 };
 
 #endif

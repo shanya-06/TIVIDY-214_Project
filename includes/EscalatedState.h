@@ -18,6 +18,7 @@ public:
      * @brief Returns the name of this lifecycle state.
      */
     std::string getName() const override;
+    bool canAssign() const override { return true; }
 
     /**
      * @brief Reassigns an escalated work item.

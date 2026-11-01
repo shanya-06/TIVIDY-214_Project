@@ -1,4 +1,3 @@
-
 #include "EscalatedState.h"
 #include "AssignedState.h"
 #include "WorkItem.h"

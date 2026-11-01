@@ -1,4 +1,3 @@
-
 #ifndef WORKITEMSTATE_H
 #define WORKITEMSTATE_H
 
@@ -24,6 +23,32 @@ public:
      * @brief Returns the name of the current state.
      */
     virtual std::string getName() const = 0;
+
+    /**
+     * @brief Whether assign() is a legal operation in this state.
+     *
+     * Lets the Mediator ask before auto-assigning, so it never triggers
+     * an invalid-transition exception.
+     */
+    virtual bool canAssign() const { return false; }
+
+    /** @brief Whether escalate() is a legal operation in this state. */
+    virtual bool canEscalate() const { return false; }
+
+    /** @brief Whether this state means the item was created but not opened yet. */
+    virtual bool isCreated() const { return false; }
+
+    /** @brief Whether this state means work has started on the item. */
+    virtual bool isInProgress() const { return false; }
+
+    /** @brief Whether this state means the work item was rejected. */
+    virtual bool isRejected() const { return false; }
+
+    /** @brief Whether this state means the work item has been completed. */
+    virtual bool isCompleted() const { return false; }
+
+    /** @brief Whether the item is finished and is waiting for an approval decision. */
+    virtual bool isAwaitingApproval() const { return false; }
 
     /**
      * @brief Makes a created work item available.

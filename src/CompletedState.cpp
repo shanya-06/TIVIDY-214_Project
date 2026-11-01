@@ -1,4 +1,3 @@
-
 #include "CompletedState.h"
 
 /**

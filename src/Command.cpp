@@ -2,7 +2,7 @@
 
 #include "WorkItem.h"
 #include "WorkflowParticipant.h"
-#include "Types.h"
+#include <stdexcept>
 
 //Assign Command
 AssignCommand::AssignCommand(WorkItem* item, WorkflowParticipant* participant)
@@ -15,7 +15,7 @@ void AssignCommand::execute(){
 }
 
 void AssignCommand::undo(){
-    receiver->makeAvailable();
+    throw std::logic_error("Cannot undo an assignment: the work item lifecycle has no way back to Available");
 }
 
 std::string AssignCommand::getDescription() const{
@@ -25,8 +25,8 @@ std::string AssignCommand::getDescription() const{
 
 
 //CompleteWork Command
-CompleteWorkCommand::CompleteWorkCommand( WorkItem* item, const Map& result)
-                    : receiver(item), result(result) {
+CompleteWorkCommand::CompleteWorkCommand(WorkItem* item)
+                    : receiver(item) {
     if (!receiver)
         throw std::invalid_argument("Receiver cannot be null");
 }
