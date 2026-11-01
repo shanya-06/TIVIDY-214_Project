@@ -19,13 +19,13 @@ https://docs.google.com/document/d/16ex4TXWQJ5i_OFzQPBb63-5x0QIYT5eZro7JFrQ3npw/
 
 ## Team members:
 
-Shanya Nair - u25061845
-Nasiha Osman - u25110188
-Mohammed Lutchka - u25588304
-Yasar Rahman - u24596397
-Tamima Alam Touhid - u24691284
-Mueez Gani - u24983439
-Tshegofatso Kungwane - u23605032
+- Shanya Nair - u25061845
+- Nasiha Osman - u25110188
+- Mohammed Lutchka - u25588304
+- Yasar Rahman - u24596397
+- Tamima Alam Touhid - u24691284
+- Mueez Gani - u24983439
+- Tshegofatso Kungwane - u23605032
 
 ## Build and Run
 
